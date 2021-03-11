@@ -22,7 +22,7 @@ export function reactive<T>(initData: T): T & { attachTo(changeTracker: ChangeTr
 reactive.currentChangeTracker = undefined as ChangeTracker | undefined;
 
 // 和 vue3 的 Ref 类似，是响应式的单个值
-export class Ref<T = any> extends SimpleAtom {
+class Ref<T = any> extends SimpleAtom {
     constructor(private value: T) {
         super();
     }
@@ -36,6 +36,10 @@ export class Ref<T = any> extends SimpleAtom {
         (changeTracker || delegatesChnageTracker).onAtomRead(this);
         return this.value;
     }
+}
+
+export function ref<T>(value?: T): Ref<T> {
+    return new Ref<T>(value!);
 }
 
 // @internal
