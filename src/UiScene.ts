@@ -1,4 +1,4 @@
-import { Scene, Database, ServiceProtocol, newTrace, Span } from "@rotcare/io";
+import { Scene, newTrace, Span, IoConf } from "@rotcare/io";
 
 // 整个浏览器级别的配置
 export class UiScene {
@@ -6,8 +6,7 @@ export class UiScene {
     public static onUnhandledCallbackError = (scene: Scene, e: any) => {
         console.error(`unhandled callback error: ${scene}`, e);
     };
-    public static database: Database;
-    public static serviceProtocol: ServiceProtocol;
+    public static ioConf: IoConf;
     public static createRW(op: string | Span) {
         return enableChangeNotification(this.create(op));
     }
@@ -15,10 +14,7 @@ export class UiScene {
         return ensureReadonly(this.create(op));
     }
     private static create(op: string | Span) {
-        return new Scene(typeof op === 'string' ? newTrace(op) : op, {
-            database: UiScene.database,
-            serviceProtocol: UiScene.serviceProtocol,
-        });
+        return new Scene(typeof op === 'string' ? newTrace(op) : op, UiScene.ioConf);
     }
 }
 

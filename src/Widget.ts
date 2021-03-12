@@ -1,6 +1,6 @@
 import { Span, Scene, Atom } from '@rotcare/io';
 import { Future } from './Future';
-import { ReactiveObject, ref } from './reactive';
+import { ChangeTracker, ReactiveObject, ref } from './reactive';
 import { UiScene } from './UiScene';
 import type { OmitOneArg, OmitThreeArg, OmitTwoArg } from './UiScene';
 
@@ -13,19 +13,32 @@ const transientProps = new Set<PropertyKey>([
 ]);
 
 // 暴露给 rx-react 等实现 Widget 渲染的 Service Provider
-export interface WidgetSpi {}
+export interface WidgetSpi {
+    // 依赖订阅和刷新
+    asyncDeps: Map<string, Future>;
+    syncDeps: Set<Atom>;
+    onAtomChanged(span: Span): void;
+    refreshAsyncDeps(span: Span, isMounting: boolean): Promise<void>;
+    // 生命周期
+    unmounted?: boolean;
+    needMountAsync: boolean;
+    setupHooks(): any;
+    mount(span: Span): Promise<void>;
+    unmount(): void;
+    attachTo(tracker: ChangeTracker): any;
+}
 
 // 展示界面，其数据来自三部分
 // 父组件传递过来的 props
 // 从 I/O 获得的外部状态，保存在 asyncDeps 里
 // 从其他 reactive 的对象获得的外部状态，保存在 syncDeps 里
-export abstract class Widget<P = any> extends ReactiveObject {
+export abstract class Widget<P = any> extends ReactiveObject implements WidgetSpi {
     // 异步操作回调可能发生在组件卸载之后
     // @internal
     public unmounted?: boolean;
     // 外部状态
-    private asyncDeps: Map<string, Future> = new Map();
-    private syncDeps: Set<Atom> = new Set();
+    public asyncDeps: Map<string, Future> = new Map();
+    public syncDeps: Set<Atom> = new Set();
     // 父组件传入的 props
     public readonly props: P;
     constructor(props: P) {
@@ -65,7 +78,8 @@ export abstract class Widget<P = any> extends ReactiveObject {
         return !!this.onMount || this.asyncDeps.size > 0;
     }
 
-    private async refreshAsyncDeps(span: Span, isMounting: boolean) {
+    // @internal
+    public async refreshAsyncDeps(span: Span, isMounting: boolean) {
         const promises = new Map<string, Promise<any>>();
         // 并发计算
         for (const [k, future] of this.asyncDeps.entries()) {
