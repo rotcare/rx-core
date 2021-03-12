@@ -1,4 +1,4 @@
-import { Span, Scene, Atom } from '@stableinf/io';
+import { Span, Scene, Atom } from '@rotcare/io';
 import { Future } from './Future';
 import { ReactiveObject, ref } from './reactive';
 import { UiScene } from './UiScene';

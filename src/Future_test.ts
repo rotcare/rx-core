@@ -1,4 +1,4 @@
-import { ActiveRecord } from '@stableinf/io';
+import { ActiveRecord } from '@rotcare/io';
 import { strict } from 'assert';
 import { Future } from './Future';
 import { should } from './should';

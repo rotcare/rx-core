@@ -1,4 +1,4 @@
-import type { Atom, Span, Scene, AtomSubscriber } from '@stableinf/io';
+import type { Atom, Span, Scene, AtomSubscriber } from '@rotcare/io';
 
 // Future 是一个 async 计算流程，通过 scene 访问 I/O，从而对所访问的 table 进行订阅
 export class Future<T = any> {

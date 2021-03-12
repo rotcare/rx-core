@@ -1,4 +1,4 @@
-import { Scene, Database, ServiceProtocol, newTrace, Span } from "@stableinf/io";
+import { Scene, Database, ServiceProtocol, newTrace, Span } from "@rotcare/io";
 
 // 整个浏览器级别的配置
 export class UiScene {

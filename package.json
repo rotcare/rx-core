@@ -1,12 +1,12 @@
 {
-    "name": "@stableinf/rx-core",
+    "name": "@rotcare/rx-core",
     "version": "0.1.0",
     "repository": {
         "type": "git",
-        "url": "https://github.com/stableinf/rx-core.git"
+        "url": "https://github.com/rotcare/rx-core.git"
     },
     "main": "src/index.ts",
     "peerDependencies": {
-        "@stableinf/io": "*"
+        "@rotcare/io": "*"
     }
 }

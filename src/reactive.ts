@@ -1,4 +1,4 @@
-import { Atom, SimpleAtom, useLog, REALM_REACTIVE } from '@stableinf/io';
+import { Atom, SimpleAtom, useLog, REALM_REACTIVE } from '@rotcare/io';
 
 const log = useLog(REALM_REACTIVE);
 

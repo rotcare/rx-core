@@ -1,4 +1,4 @@
-import { Impl, newTrace, Scene } from "@stableinf/io";
+import { Impl, newTrace, Scene } from "@rotcare/io";
 
 export function should(behavior: string, func: (scene: Scene) => void) {
     return async function(this: any) {
