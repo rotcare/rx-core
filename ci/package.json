@@ -4,5 +4,8 @@
     "workspaces": [".."],
     "dependencies": {
         "@rotcare/io": "git://github.com/rotcare/io.git"
+    },
+    "scripts": {
+        "postinstall": "cd .. && rm -rf node_modules && ln -s ci/node_modules"
     }
 }
