@@ -18,4 +18,4 @@ jobs:
       - run: yarn
       - run: cd .. && rm -rf node_modules && ln -s ci/node_modules
       - run: cd .. && yarn tsc
-      - run: yarn mocha -r ts-eager/register "../src/**/*_test.ts"
+      - run: TS_NODE_IGNORE=" " yarn mocha -r ts-eager/register "../src/**/*_test.ts"
