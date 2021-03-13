@@ -4,7 +4,7 @@ import { Scene, newTrace, Span, IoConf } from "@rotcare/io";
 export class UiScene {
     // 可以覆盖这个回调来实现全局写操作的异常处理，读操作的异常用 ErrorBoundary 去抓
     public static onUnhandledCallbackError = (scene: Scene, e: any) => {
-        console.error(`unhandled callback error: ${scene}`, e);
+        scene.reportEvent('unhandled callback error', { error: e });
     };
     public static ioConf: IoConf;
     public static createRW(op: string | Span) {

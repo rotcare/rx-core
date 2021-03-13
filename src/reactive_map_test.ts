@@ -22,10 +22,10 @@ describe('Reactive / map', () => {
             const arr = ['hello'];
             const obj = reactive({ a: new Map([['b', arr]]) }).attachTo(scene);
             const future = new Future(async () => {
-                return obj.a.get('b').join(',');
+                return obj.a.get('b')!.join(',');
             });
             strict.equal('hello', await future.get(scene));
-            obj.a.get('b').push('world');
+            obj.a.get('b')!.push('world');
             strict.equal('hello,world', await future.get(scene));
         }),
     );

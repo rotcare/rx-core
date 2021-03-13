@@ -1,4 +1,4 @@
-import { Span, Scene, Atom } from '@rotcare/io';
+import { Span, Scene, Atom, SpanSpi } from '@rotcare/io';
 import { Future } from './Future';
 import { ChangeTracker, ReactiveObject, ref } from './reactive';
 import { UiScene } from './UiScene';
@@ -85,7 +85,7 @@ export abstract class Widget<P = any> extends ReactiveObject implements WidgetSp
         for (const [k, future] of this.asyncDeps.entries()) {
             const scene = UiScene.createRO(span);
             const promise = scene.execute(future, future.get);
-            promise.catch(span.onError);
+            promise.catch((span as SpanSpi).onError);
             promises.set(k, promise);
         }
         let dirty = false;

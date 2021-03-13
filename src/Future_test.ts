@@ -1,9 +1,9 @@
-import { ActiveRecord } from '@rotcare/io';
+import { Entity } from '@rotcare/io';
 import { strict } from 'assert';
 import { Future } from './Future';
 import { should } from './should';
 
-class Product extends ActiveRecord {
+class Product extends Entity {
     public name: string;
 }
 
