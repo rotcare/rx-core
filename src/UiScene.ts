@@ -6,7 +6,7 @@ export class UiScene {
     public static onUnhandledCallbackError = (scene: Scene, e: any) => {
         scene.reportEvent('unhandled callback error', { error: e });
     };
-    public static conf: SceneConf;
+    public static conf: Partial<SceneConf>;
     // 对每个写操作的 scene 都打开改动通知
     public static createRW(op: string | Span) {
         return this.create(op, (scene, atom) => {
