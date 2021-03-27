@@ -5,10 +5,10 @@ import { should } from './should';
 
 class Product extends Entity {
     public static async createProduct(scene: Scene, props: Partial<Product>) {
-        return await scene.io.database.insert(scene, Product, props);
+        return await scene.useDatabase().insert(Product, props);
     }
     public static async queryProduct(scene: Scene, props: Partial<Product>) {
-        return await scene.io.database.query(scene, Product, props);
+        return await scene.useDatabase().query(Product, props);
     }
     public name: string;
 }

@@ -1,4 +1,4 @@
-import { Scene, newTrace, Span, IoConf } from "@rotcare/io";
+import { Scene, newTrace, Span, SceneConf, Atom, SpanSpi } from "@rotcare/io";
 
 // 整个浏览器级别的配置
 export class UiScene {
@@ -6,15 +6,26 @@ export class UiScene {
     public static onUnhandledCallbackError = (scene: Scene, e: any) => {
         scene.reportEvent('unhandled callback error', { error: e });
     };
-    public static ioConf: IoConf;
+    public static conf: SceneConf;
+    // 对每个写操作的 scene 都打开改动通知
     public static createRW(op: string | Span) {
-        return enableChangeNotification(this.create(op));
+        return this.create(op, (scene, atom) => {
+            atom.onAtomChanged(scene.span);
+        });
     }
+    // 读操作应该是只读的
     public static createRO(op: string | Span) {
-        return ensureReadonly(this.create(op));
+        return this.create(op, (scene, atom) => {
+            throw new Error(`detected readonly scene ${scene} changed ${atom}`);
+        });
     }
-    private static create(op: string | Span) {
-        return new Scene(typeof op === 'string' ? newTrace(op) : op, UiScene.ioConf);
+    private static create(op: string | Span, onAtomChanged: (scene: Scene, atom: Atom) => void) {
+        const span = typeof op === 'string' ? newTrace(op) : op;
+        const scene = new Scene(span, {...UiScene.conf, onAtomChanged});
+        scene.span.onError = (e) => {
+            UiScene.onUnhandledCallbackError(scene, e);
+        };
+        return scene;
     }
 }
 
@@ -48,25 +59,6 @@ export function bindCallback(traceOp: string, cb: any, ...boundArgs: any[]): any
             }
         })();
     };
-}
-
-// 对每个写操作的 scene 都打开改动通知
-function enableChangeNotification(scene: Scene) {
-    scene.span.onError = (e) => {
-        UiScene.onUnhandledCallbackError(scene, e);
-    };
-    scene.onAtomChanged = (atom) => {
-        atom.onAtomChanged(scene.span);
-    };
-    return scene;
-}
-
-// 读操作应该是只读的
-function ensureReadonly(scene: Scene) {
-    scene.onAtomChanged = (tableName) => {
-        throw new Error(`detected readonly scene ${scene} changed ${tableName}`);
-    };
-    return scene;
 }
 
 // @internal
